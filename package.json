@@ -3,11 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "description": "Collection de widgets Grist - TaskFlow & Artefactory",
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
+    "build": "echo 'No build required for static widgets'",
     "dev": "echo 'Ouvrir les fichiers HTML directement dans le navigateur'",
     "manifest": "node scripts/generate-manifest.js",
     "promote": "node scripts/promote.js",
