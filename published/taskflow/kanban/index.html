@@ -222,6 +222,7 @@
                 <button class="btn active" onclick="setGroupBy('statut')" id="groupStatut">Statut</button>
                 <button class="btn" onclick="setGroupBy('priorite')" id="groupPriorite">Priorité</button>
                 <button class="btn" onclick="setGroupBy('projet')" id="groupProjet">Projet</button>
+                <button class="btn" onclick="setGroupBy('axe')" id="groupAxe">Axes</button>
             </div>
         </div>
         <div class="header-right">
@@ -378,6 +379,22 @@
                 const cols = projects.filter(p => p.actif !== false).map(p => ({ key: String(p.id), label: p.nom, icon: `<span style="color:${p.couleur}">●</span>`, tasks: ft.filter(t => t.projet === p.id) }));
                 cols.push({ key: 'none', label: 'Sans projet', icon: '', tasks: ft.filter(t => !t.projet) });
                 return cols;
+                } else if (groupBy === 'axe') {
+            const allAxesVals = [...new Set(ft.map(t => t.Axes || 'Sans axe'))];
+            return allAxesVals.map(val => {
+                let label = val;
+                // Si ton Axe est une référence vers la table Projets, on récupère le vrai nom
+                if (typeof val === 'number') {
+                    const p = projects.find(x => x.id === val);
+                    if (p) label = p.nom;
+                }
+                return {
+                    key: String(val),
+                    label: label,
+                    icon: '🎯', 
+                    tasks: ft.filter(t => (t.Axes || 'Sans axe') === val)
+                };
+            });
             }
             return [];
         }
@@ -413,6 +430,10 @@
             if (groupBy === 'statut') { updates.statut = colKey; if (colKey === 'done') updates.progression = 100; }
             else if (groupBy === 'priorite') updates.priorite = colKey;
             else if (groupBy === 'projet') updates.projet = colKey === 'none' ? null : parseInt(colKey);
+            else if (groupBy === 'axe') {
+            let val = colKey === 'Sans axe' ? null : colKey;
+            updates.Axes = (val !== null && !isNaN(val)) ? parseInt(val) : val;
+        }
             
             Object.assign(task, updates);
             
